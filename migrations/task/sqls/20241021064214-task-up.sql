@@ -359,6 +359,21 @@ WHERE user_id = (SELECT id FROM "USER" WHERE email = 'wXlTq@hexschooltest.io');
     -- from ( 用戶王小明的購買堂數 ) as "CREDIT_PURCHASE"
     -- inner join ( 用戶王小明的已使用堂數) as "COURSE_BOOKING"
     -- on "COURSE_BOOKING".user_id = "CREDIT_PURCHASE".user_id;
+SELECT ("CREDIT_PURCHASE".total_credit - "COURSE_BOOKING".total_use) AS remaining_cred
+-- from ( 用戶王小明的購買堂數 ) as "CREDIT_PURCHASE"
+FROM (SELECT user_id, SUM(purchased_credits) AS total_credit
+			FROM "CREDIT_PURCHASE"
+      GROUP BY user_id
+     ) AS "CREDIT_PURCHASE"
+--inner join ( 用戶王小明的已使用堂數) as "COURSE_BOOKING"
+INNER JOIN (SELECT user_id, COUNT(*) AS total_use
+						FROM "COURSE_BOOKING"
+						-- 預約狀態篩選
+						WHERE status = '上課中'
+						GROUP BY user_id) AS "COURSE_BOOKING" 
+      ON "COURSE_BOOKING".user_id = "CREDIT_PURCHASE".user_id
+-- 要找的用戶篩選    
+WHERE "CREDIT_PURCHASE".user_id = (SELECT id FROM "USER" WHERE email = 'wXlTq@hexschooltest.io');
 
 
 -- ████████  █████   █     ███  
@@ -380,10 +395,9 @@ ORDER BY experience_years DESC;
 
 -- 6-2 查詢：查詢每種專長的教練數量，並只列出教練數量最多的專長（需使用 group by, inner join 與 order by 與 limit 語法）
 -- 顯示須包含以下欄位： 專長名稱, coach_total
-SELECT "SKILL".name AS 專長名稱, COUNT("COACH".id) AS coach_total 
-FROM "SKILL"
-INNER JOIN "COACH_LINK_SKILL" ON "SKILL".id = "COACH_LINK_SKILL".skill_id
-INNER JOIN "COACH" ON "COACH_LINK_SKILL".coach_id = "COACH".id
+SELECT  "SKILL".name AS 專長名稱, COUNT(*) AS coach_total
+FROM "COACH_LINK_SKILL"
+INNER JOIN "SKILL" ON "COACH_LINK_SKILL".skill_id = "SKILL".id
 GROUP BY "SKILL".name
 ORDER BY coach_total DESC
 LIMIT 1; 
