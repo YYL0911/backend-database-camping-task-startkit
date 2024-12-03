@@ -183,7 +183,7 @@ VALUES
             WHERE user_id =
                 (SELECT id 
                 FROM "USER" 
-                WHERE email = 'muscle@hexschooltest.io'
+                WHERE email = 'starplatinum@hexschooltest.io'
                 )   
         ),
         (SELECT id FROM "SKILL" WHERE name = '有氧運動')
@@ -197,7 +197,7 @@ VALUES
             WHERE user_id =
                 (SELECT id 
                 FROM "USER" 
-                WHERE email = 'muscle@hexschooltest.io'
+                WHERE email = 'starplatinum@hexschooltest.io'
                 )   
         ),
         (SELECT id FROM "SKILL" WHERE name = '復健訓練')
@@ -359,7 +359,7 @@ WHERE user_id = (SELECT id FROM "USER" WHERE email = 'wXlTq@hexschooltest.io');
     -- from ( 用戶王小明的購買堂數 ) as "CREDIT_PURCHASE"
     -- inner join ( 用戶王小明的已使用堂數) as "COURSE_BOOKING"
     -- on "COURSE_BOOKING".user_id = "CREDIT_PURCHASE".user_id;
-SELECT ("CREDIT_PURCHASE".total_credit - "COURSE_BOOKING".total_use) AS remaining_cred
+SELECT "CREDIT_PURCHASE".user_id AS user_id,("CREDIT_PURCHASE".total_credit - "COURSE_BOOKING".total_use) AS remaining_cred
 -- from ( 用戶王小明的購買堂數 ) as "CREDIT_PURCHASE"
 FROM (SELECT user_id, SUM(purchased_credits) AS total_credit
 	  FROM "CREDIT_PURCHASE"
@@ -425,6 +425,6 @@ WHERE "CREDIT_PURCHASE".purchase_at >= '2024-11-01 00:00:00'
 -- 顯示須包含以下欄位： 預約會員人數
 SELECT COUNT(DISTINCT user_id) AS 預約會員人數
 FROM "COURSE_BOOKING"
-WHERE "COURSE_BOOKING".booking_at >= '2024-11-01 00:00:00'
-    AND "COURSE_BOOKING".booking_at <= '2024-11-30 23:59:59'
+WHERE "COURSE_BOOKING".created_at >= '2024-11-01 00:00:00'
+    AND "COURSE_BOOKING".created_at <= '2024-11-30 23:59:59'
     AND status = '即將授課';
